@@ -93,7 +93,7 @@ global.config = {
   },
 
   path: {
-    refresh: 2000000,
+    refresh: 20000,
     allowRoutingThroughFriendRooms: false,
     pathfindIncomplete: true,
   },
@@ -133,7 +133,7 @@ global.config = {
     scoutSkipWhenStuck: true, // Useful for novice areas.
     scout: true, // TODO somehow broken ?? Is it broken ??
     upgraderMinStorage: 0,
-    lastSeenThreshold: 1000000,
+    lastSeenThreshold: 10000,
     notify: false,
   },
 

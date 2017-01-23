@@ -3,9 +3,9 @@
 Room.prototype.getCostMatrixCallback = function(end, excludeStructures) {
   let costMatrix = this.getMemoryCostMatrix();
   if (!costMatrix) {
-    this.log('getCostMatrixCallback updatePosition: ' + JSON.stringify(costMatrix));
+    //this.log('getCostMatrixCallback updatePosition: ' + JSON.stringify(costMatrix));
     this.updatePosition();
-    this.log('costmatrix: ' + JSON.stringify(this.getMemoryCostMatrix()));
+    //this.log('costmatrix: ' + JSON.stringify(this.getMemoryCostMatrix()));
   }
 
   let room = this;

@@ -37,7 +37,7 @@ Room.prototype.setMemoryCostMatrix = function(costMatrix) {
  */
 Room.prototype.getMemoryCostMatrix = function() {
   if (!cache.rooms[this.name]) {
-    this.log('No cache');
+    //this.log('No cache');
     cache.rooms[this.name] = {};
   }
   if (!cache.rooms[this.name].costMatrix) {
@@ -47,15 +47,15 @@ Room.prototype.getMemoryCostMatrix = function() {
     // this.log(JSON.stringify(cache.rooms[this.name].costMatrix));
     // this.log(JSON.stringify(cache.rooms[this.name]));
     if (!this.memory.costMatrix || !this.memory.costMatrix.base) {
-      this.log('No memory');
+      //this.log('No memory');
       // throw new Error();
       return;
     }
-    this.log('costMatrix from memory ');
+    //this.log('costMatrix from memory ');
     cache.rooms[this.name].costMatrix.base = PathFinder.CostMatrix.deserialize(this.memory.costMatrix.base);
   }
   if (!cache.rooms[this.name].costMatrix.base) {
-    this.log('getMemoryCostMatrix' + cache.rooms[this.name].costMatrix.base + ' ' + cache.rooms[this.name].costMatrix);
+    //this.log('getMemoryCostMatrix' + cache.rooms[this.name].costMatrix.base + ' ' + cache.rooms[this.name].costMatrix);
   }
   return cache.rooms[this.name].costMatrix.base;
 };
