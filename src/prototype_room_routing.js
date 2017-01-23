@@ -36,7 +36,7 @@ Room.prototype.setFillerArea = function(storagePos, costMatrixBase, route) {
     for (let pos of pathFiller) {
       costMatrixBase.set(pos.x, pos.y, config.layout.pathAvoid);
     }
-    this.memory.costMatrix.base = costMatrixBase.serialize();
+    this.setMemoryCostMatrix(costMatrixBase);
 
     let linkStoragePosIterator = fillerPos.findNearPosition();
     for (let linkStoragePos of linkStoragePosIterator) {
@@ -51,7 +51,7 @@ Room.prototype.setFillerArea = function(storagePos, costMatrixBase, route) {
           this.memory.position.structure.tower.push(towerPos);
 
           costMatrixBase.set(fillerPos.x, fillerPos.x, config.layout.creepAvoid);
-          this.memory.costMatrix.base = costMatrixBase.serialize();
+          this.setMemoryCostMatrix(costMatrixBase);
 
           return;
         }
@@ -62,13 +62,11 @@ Room.prototype.setFillerArea = function(storagePos, costMatrixBase, route) {
 
 Room.prototype.updatePosition = function() {
   // Instead of doing the complete setup, this could also be done on request
-  //  this.log('Update position');
+  this.log('Update position');
+  cache.rooms[this.name] = {};
+  delete this.memory.routing;
 
   let costMatrixBase = this.getCostMatrix();
-
-  if (!this.memory.costMatrix) {
-    this.memory.costMatrix = {};
-  }
 
   this.memory.position = {
     creep: {}
@@ -87,15 +85,21 @@ Room.prototype.updatePosition = function() {
     extractor: []
   };
 
+  if (this.controller) {
+    let upgraderPos = this.controller.pos.findNearPosition().next().value;
+    this.memory.position.creep[this.controller.id] = upgraderPos;
+    costMatrixBase.set(upgraderPos.x, upgraderPos.y, config.layout.creepAvoid);
+    this.setMemoryCostMatrix(costMatrixBase);
+  }
+
   let sources = this.find(FIND_SOURCES);
   for (let source of sources) {
     let sourcer = source.pos.findNearPosition().next().value;
     this.memory.position.creep[source.id] = sourcer;
-    // TODO E.g. E11S8 it happens that sourcer has no position
     let link = sourcer.findNearPosition().next().value;
     this.memory.position.structure.link.push(link);
     costMatrixBase.set(link.x, link.y, config.layout.structureAvoid);
-    this.memory.costMatrix.base = costMatrixBase.serialize();
+    this.setMemoryCostMatrix(costMatrixBase);
   }
 
   let minerals = this.find(FIND_MINERALS);
@@ -103,7 +107,7 @@ Room.prototype.updatePosition = function() {
     let extractor = mineral.pos.findNearPosition().next().value;
     this.memory.position.creep[mineral.id] = extractor;
     costMatrixBase.set(extractor.x, extractor.y, config.layout.creepAvoid);
-    this.memory.costMatrix.base = costMatrixBase.serialize();
+    this.setMemoryCostMatrix(costMatrixBase);
   }
 
   if (this.controller) {
@@ -111,16 +115,11 @@ Room.prototype.updatePosition = function() {
       this.memory.position.structure.extractor.push(mineral.pos);
     }
 
-    let upgraderPos = this.controller.pos.findNearPosition().next().value;
-    this.memory.position.creep[this.controller.id] = upgraderPos;
-    costMatrixBase.set(upgraderPos.x, upgraderPos.y, config.layout.creepAvoid);
-    this.memory.costMatrix.base = costMatrixBase.serialize();
-
     let storagePos = this.memory.position.creep[this.controller.id].findNearPosition().next().value;
     this.memory.position.structure.storage.push(storagePos);
     // TODO should also be done for the other structures
     costMatrixBase.set(storagePos.x, storagePos.y, config.layout.structureAvoid);
-    this.memory.costMatrix.base = costMatrixBase.serialize();
+    this.setMemoryCostMatrix(costMatrixBase);
 
     this.memory.position.creep.pathStart = storagePos.findNearPosition().next().value;
 
@@ -130,12 +129,12 @@ Room.prototype.updatePosition = function() {
     let pathUpgrader = this.getPath(route, 0, 'pathStart', this.controller.id, true);
     // TODO exclude the last position (creepAvoid) in all paths
     for (let pos of pathUpgrader) {
-      if (upgraderPos.isEqualTo(pos.x, pos.y)) {
+      if (this.memory.position.creep[this.controller.id].isEqualTo(pos.x, pos.y)) {
         continue;
       }
       costMatrixBase.set(pos.x, pos.y, config.layout.pathAvoid);
     }
-    this.memory.costMatrix.base = costMatrixBase.serialize();
+    this.setMemoryCostMatrix(costMatrixBase);
 
     for (let source of sources) {
       let route = [{
@@ -153,13 +152,13 @@ Room.prototype.updatePosition = function() {
       }
       let sourcer = this.memory.position.creep[source.id];
       costMatrixBase.set(sourcer.x, sourcer.y, config.layout.creepAvoid);
-      this.memory.costMatrix.base = costMatrixBase.serialize();
+      this.setMemoryCostMatrix(costMatrixBase);
     }
 
     this.setFillerArea(storagePos, costMatrixBase, route);
   }
 
-  this.memory.costMatrix.base = costMatrixBase.serialize();
+  this.setMemoryCostMatrix(costMatrixBase);
   return costMatrixBase;
 };
 
@@ -187,9 +186,38 @@ Room.prototype.getCreepPositionForId = function(to) {
   return new RoomPosition(pos.x, pos.y, this.name);
 };
 
+Room.prototype.findRoute = function(from, to) {
+  let routeCallback = function(roomName, fromRoomName) {
+    if (roomName == to) {
+      return 1;
+    }
+
+    if (Memory.rooms[roomName] && Memory.rooms[roomName].state == 'Occupied') {
+      //         console.log(`Creep.prototype.getRoute: Do not route through occupied rooms ${roomName}`);
+      if (config.path.allowRoutingThroughFriendRooms && friends.indexOf(Memory.rooms[roomName].player) > -1) {
+        console.log('routing through friendly room' + roomName);
+        return 1;
+      }
+      //         console.log('Not routing through enemy room' + roomName);
+      return Infinity;
+    }
+
+    if (Memory.rooms[roomName] && Memory.rooms[roomName].state == 'Blocked') {
+      //         console.log(`Creep.prototype.getRoute: Do not route through blocked rooms ${roomName}`);
+      return Infinity;
+    }
+
+    return 1;
+  };
+  return Game.map.findRoute(from, to, {
+    routeCallback: routeCallback
+  });
+};
+
 Room.prototype.buildPath = function(route, routePos, from, to) {
   if (!to) {
-    this.log('newmove: buildPath: no to');
+    this.log('newmove: buildPath: no to from: ' + from + ' to: ' + to + ' routePos: ' + routePos + ' route: ' + JSON.stringify(route));
+    throw new Error();
   }
   let start;
   if (routePos === 0 || from == 'pathStart') {
@@ -241,6 +269,7 @@ Room.prototype.buildPath = function(route, routePos, from, to) {
 // Providing the targetId is a bit odd
 Room.prototype.getPath = function(route, routePos, startId, targetId, fixed) {
   if (!this.memory.position) {
+    this.log('getPath no position');
     this.updatePosition();
   }
 

@@ -179,7 +179,7 @@ Creep.prototype.handleUpgrader = function() {
     let word = Game.time % sentence.length;
     creep.say(sentence[word], true);
   };
-  say(this);
+  // say(this);
   this.spawnReplacement(1);
   var room = Game.rooms[this.room.name];
   if (room.memory.attackTimer > 50 && room.controller.level > 6) {

@@ -29,7 +29,7 @@ global.config = {
 
   info: {
     signController: true,
-    signText: 'Fully automated TooAngel bot: https://github.com/TooAngel/screeps',
+    signText: 'Fully automated TooAngel bot: http://tooangel.github.io/screeps/',
   },
 
   // Due to newly introduces via global variable caching this can be removed
@@ -93,7 +93,7 @@ global.config = {
   },
 
   path: {
-    refresh: 20000,
+    refresh: 2000000,
     allowRoutingThroughFriendRooms: false,
     pathfindIncomplete: true,
   },
@@ -133,7 +133,7 @@ global.config = {
     scoutSkipWhenStuck: true, // Useful for novice areas.
     scout: true, // TODO somehow broken ?? Is it broken ??
     upgraderMinStorage: 0,
-    lastSeenThreshold: 10000,
+    lastSeenThreshold: 1000000,
     notify: false,
   },
 
