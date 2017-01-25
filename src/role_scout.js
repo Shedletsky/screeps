@@ -91,7 +91,7 @@ roles.scout.execute = function(creep) {
       search = PathFinder.search(
         creep.pos, {
           pos: targetPosObject,
-          range: 20
+          range: 25
         }, {
           roomCallback: creep.room.getCostMatrixCallback(targetPosObject, true)
         }
@@ -129,14 +129,14 @@ roles.scout.execute = function(creep) {
           delete creep.memory.last; // Delete to reset stuckness.
         }
       }
-      //if (search.path.length > 0) {
-      //creep.move(creep.pos.getDirectionTo(search.path[0]));
-      //} else {
-      let returnCode = creep.moveTo(targetPosObject, {
-        ignoreCreeps: true,
-        costCallback: creep.room.getCostMatrixCallback()
-      });
-      //}
+      if (!search.incomplete) {
+        creep.move(creep.pos.getDirectionTo(search.path[0]));
+      } else {
+        let returnCode = creep.moveTo(targetPosObject, {
+          ignoreCreeps: false,
+          costCallback: creep.room.getCostMatrixCallback()
+        });
+      }
       return true;
     }
     creep.say(creep.pos.getDirectionTo(search.path[0]));
