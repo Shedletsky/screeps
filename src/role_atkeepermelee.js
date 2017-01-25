@@ -74,7 +74,7 @@ roles.atkeepermelee.action = function(creep) {
   creep.setNextSpawn();
 
   let getNextSourceKeeper = function(creep) {
-    var sourceKeeper = creep.room.find(FIND_HOSTILE_CREEPS, {
+    var sourceKeeper = creep.room.find(FIND_HOSTILE_STRUCTURES, {
       filter: function(object) {
         return object.owner.username == 'Source Keeper';
       }
