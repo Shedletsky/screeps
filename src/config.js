@@ -133,6 +133,7 @@ global.config = {
       7: 6,
       8: 9,
     },
+    numberOfSkRooms: 1,
     revive: true,
     rebuildLayout: 7654,
     handleNukeAttackInterval: 132,
