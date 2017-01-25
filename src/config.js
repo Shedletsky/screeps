@@ -148,6 +148,7 @@ global.config = {
     upgraderMinStorage: 0,
     lastSeenThreshold: 10000,
     notify: false,
+    skMining: false,
   },
 
   layout: {
