@@ -91,7 +91,7 @@ function setStructures(room, path, costMatrixBase) {
         continue;
       }
 
-      // TODO Build labs, terminal, nuker ... at the path to extractor / mineral or the next path which diverge from the harvester path
+    // TODO Build labs, terminal, nuker ... at the path to extractor / mineral or the next path which diverge from the harvester path
       if (room.memory.position.structure.tower.length < CONTROLLER_STRUCTURES.tower[8]) {
         room.memory.position.structure.tower.push(structurePos);
         costMatrixBase.set(structurePos.x, structurePos.y, config.layout.structureAvoid);
@@ -147,14 +147,14 @@ function setStructures(room, path, costMatrixBase) {
       if (!room.memory.position.pathEnd) {
         room.log('Room not completly build');
       }
-      //      let pathIndex = _.findIndex(path, i => i.x == room.memory.position.pathEnd[0].x && i.y == room.memory.position.pathEnd[0].y);
-      //      room.memory.position.path = path.slice(0, pathIndex);
-      //      return positions;
+    //      let pathIndex = _.findIndex(path, i => i.x == room.memory.position.pathEnd[0].x && i.y == room.memory.position.pathEnd[0].y);
+    //      room.memory.position.path = path.slice(0, pathIndex);
+    //      return positions;
       console.log('All structures set: ' + pathI);
       return pathI;
     }
   }
-  room.memory.costMatrix.base = costMatrixBase.serialize();
+  room.setMemoryCostMatrix(costMatrixBase);
 
   return -1;
 }
@@ -165,6 +165,7 @@ let buildCostMatrix = function(room) {
   room.memory.costMatrix = {};
 
   // TODO adapt updatePosition => init Position and set the costmatrix
+  room.log('buildCostMatrix');
   let costMatrixBase = room.updatePosition();
 
   for (let id in room.memory.position.creep) {
@@ -181,7 +182,7 @@ let buildCostMatrix = function(room) {
       costMatrixBase.set(pos.x, pos.y, 0xFF);
     }
   }
-  room.memory.costMatrix.base = costMatrixBase.serialize();
+  room.setMemoryCostMatrix(costMatrixBase);
 
   let exits = Game.map.describeExits(room.name);
   if (room.controller) {
@@ -195,7 +196,7 @@ let buildCostMatrix = function(room) {
       for (let pos of path) {
         costMatrixBase.set(pos.x, pos.y, config.layout.pathAvoid);
       }
-      room.memory.costMatrix.base = costMatrixBase.serialize();
+      room.setMemoryCostMatrix(costMatrixBase);
     }
 
     for (let endDir in exits) {
@@ -209,7 +210,7 @@ let buildCostMatrix = function(room) {
       for (let pos of path) {
         costMatrixBase.set(pos.x, pos.y, config.layout.pathAvoid);
       }
-      room.memory.costMatrix.base = costMatrixBase.serialize();
+      room.setMemoryCostMatrix(costMatrixBase);
     }
     return costMatrixBase;
   }
@@ -232,7 +233,7 @@ let buildCostMatrix = function(room) {
       for (let pos of path) {
         costMatrixBase.set(pos.x, pos.y, config.layout.pathAvoid);
       }
-      room.memory.costMatrix.base = costMatrixBase.serialize();
+      room.setMemoryCostMatrix(costMatrixBase);
     }
   }
   return costMatrixBase;
@@ -301,5 +302,5 @@ Room.prototype.setup = function() {
       costMatrixBase.set(pos.x, pos.y, config.layout.structureAvoid);
     }
   }
-  this.memory.costMatrix.base = costMatrixBase.serialize();
+  this.setMemoryCostMatrix(costMatrixBase);
 };
