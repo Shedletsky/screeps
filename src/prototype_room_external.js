@@ -447,7 +447,7 @@ Room.prototype.handleSourceKeeperRoom = function() {
       }
     }
   }
-  if (this.memory.reservation !== undefined) {
+  if (this.memory.reservation !== undefined && (!this.memory.lastChecked || Game.time - this.memory.lastchecked > 893)) {
     this.memory.lastChecked = Game.time;
     let reservation = this.memory.reservation;
     this.memory.state = 'Reserved';
