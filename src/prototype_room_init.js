@@ -311,7 +311,7 @@ Room.prototype.setup = function() {
   });
   let paths_sorted = _.sortBy(paths_controller, sorter);
   let path = this.getMemoryPath(paths_sorted[paths_sorted.length - 1].name);
-  let pathLB = this.getMemoryPath(paths_sorted[paths_sorted.length - 5].name);
+  let pathLB = this.getMemoryPath(paths_controller[4].name);
   let pathL = setLabsTerminal(this, pathLB, costMatrixBase);
   let pathI = setStructures(this, path, costMatrixBase);
   console.log('path: ' + path.name + ' pathI: ' + pathI + ' length: ' + path.length);
