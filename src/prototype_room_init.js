@@ -127,7 +127,7 @@ function setStructures(room, path, costMatrixBase) {
         continue;
       }
 
-    // TODO Build labs, terminal, nuker ... at the path to extractor / mineral or the next path which diverge from the harvester path
+      // TODO Build labs, terminal, nuker ... at the path to extractor / mineral or the next path which diverge from the harvester path
       if (room.memory.position.structure.tower.length < CONTROLLER_STRUCTURES.tower[8]) {
         room.memory.position.structure.tower.push(structurePos);
         costMatrixBase.set(structurePos.x, structurePos.y, config.layout.structureAvoid);
@@ -171,9 +171,9 @@ function setStructures(room, path, costMatrixBase) {
       if (!room.memory.position.pathEnd) {
         room.log('Room not completly build');
       }
-    //      let pathIndex = _.findIndex(path, i => i.x == room.memory.position.pathEnd[0].x && i.y == room.memory.position.pathEnd[0].y);
-    //      room.memory.position.path = path.slice(0, pathIndex);
-    //      return positions;
+      //      let pathIndex = _.findIndex(path, i => i.x == room.memory.position.pathEnd[0].x && i.y == room.memory.position.pathEnd[0].y);
+      //      room.memory.position.path = path.slice(0, pathIndex);
+      //      return positions;
       console.log('All structures set: ' + pathI);
       return pathI;
     }
