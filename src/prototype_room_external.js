@@ -87,7 +87,7 @@ Room.prototype.externalHandleHighwayRoom = function() {
   if (config.power.disabled) {
     return false;
   }
-  this.log('handle Highwayroom');
+  //this.log('handle Highwayroom');
   var structures = this.find(FIND_STRUCTURES, {
     filter: {
       structureType: STRUCTURE_POWER_BANK
@@ -106,7 +106,7 @@ Room.prototype.externalHandleHighwayRoom = function() {
         return;
       }
       if (structures[0].hits < 300000) {
-        for (var i = 0; i < Math.ceil(structures[0].power / 1000); i++) {
+        for (var i = 0; i < Math.ceil(structures[0].power / 1000) ; i++) {
           this.log('Adding powertransporter at ' + Memory.powerBanks[this.name].target);
           Game.rooms[Memory.powerBanks[this.name].target].memory.queue.push({
             role: 'powertransporter',
@@ -346,7 +346,7 @@ Room.prototype.handleUnreservedRoom = function() {
       if (distance > config.external.distance) {
         continue;
       }
-      // Only allow pathing through owned rooms or already reserved rooms.
+    // Only allow pathing through owned rooms or already reserved rooms.
       for (let routeEntry of route) {
         let routeRoomName = routeEntry.room;
         if (Game.rooms[routeRoomName] === undefined) {
@@ -418,7 +418,7 @@ Room.prototype.handleSourceKeeperRoom = function() {
       if (distance > config.external.distance) {
         continue;
       }
-      // Only allow pathing through owned rooms or already reserved rooms.
+    // Only allow pathing through owned rooms or already reserved rooms.
       for (let routeEntry of route) {
         let routeRoomName = routeEntry.room;
         if (Game.rooms[routeRoomName] === undefined) {
@@ -451,7 +451,7 @@ Room.prototype.handleSourceKeeperRoom = function() {
     this.memory.lastChecked = Game.time;
     let reservation = this.memory.reservation;
     this.memory.state = 'Reserved';
-    this.log('handle source keeper room');
+    //this.log('handle source keeper room');
     let myCreeps = this.find(FIND_MY_CREEPS);
     let sourcer = 0;
     let melee = 0;
@@ -465,6 +465,17 @@ Room.prototype.handleSourceKeeperRoom = function() {
         melee++;
         continue;
       }
+    }
+
+    if (melee < 3) {
+      var spawn = {
+        role: 'atkeeper',
+        routing: {
+          targetRoom: this.name
+        }
+      };
+      //this.log(`!!!!!!!!!!!! ${JSON.stringify(spawn)}`);
+      Game.rooms[reservation.base].checkRoleToSpawn('atkeeper', 1, '', this.name);
     }
 
     if (sourcer < 3) {
@@ -493,20 +504,9 @@ Room.prototype.handleSourceKeeperRoom = function() {
             targetRoom: source.pos.roomName
           }
         };
-        this.log(`!!!!!!!!!!!! ${JSON.stringify(spawn)}`);
+      //this.log(`!!!!!!!!!!!! ${JSON.stringify(spawn)}`);
         Game.rooms[reservation.base].checkRoleToSpawn('sourcer', 1, source.id, source.pos.roomName);
       }
-    }
-
-    if (melee === 0) {
-      var spawn = {
-        role: 'atkeeper',
-        routing: {
-          targetRoom: this.name
-        }
-      };
-      this.log(`!!!!!!!!!!!! ${JSON.stringify(spawn)}`);
-      Game.rooms[reservation.base].checkRoleToSpawn('atkeeper', 1, '', this.name);
     }
   }
 };
