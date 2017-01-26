@@ -280,10 +280,12 @@ Creep.prototype.moveByPathMy = function(route, routePos, start, target, skipPreM
     // ' + this.pos + ' routePos: ' + routePos + ' path: ' +
     // JSON.stringify(path) + ' route: ' + JSON.stringify(route));
     this.say('R:p-1: ');
-    let closestPathPosition = 50;
+    let closestPathRange = 50;
+    let closestPathPosition;
     for (let iterator = 0; iterator < search.path.length; iterator++) {
-      if (this.pos.getRangeTo(search.path[iterator] < closestPathPosition)) {
+      if (this.pos.getRangeTo(search.path[iterator] < closestPathRange)) {
         closestPathPosition = iterator;
+        closestPathRange = this.pos.getRangeTo(search.path[iterator] < closestPathRange);
       }
     }
     let returnCode = this.moveTo(search.path[closestPathPosition], {
