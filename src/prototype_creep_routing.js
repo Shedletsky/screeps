@@ -280,9 +280,9 @@ Creep.prototype.moveByPathMy = function(route, routePos, start, target, skipPreM
     // ' + this.pos + ' routePos: ' + routePos + ' path: ' +
     // JSON.stringify(path) + ' route: ' + JSON.stringify(route));
     this.say('R:p-1: ');
-
+    var creepPos = this.pos;
     let returnCode = this.moveTo(_.min(search.path, function(object) {
-      return object.getRangeTo(this);
+      return object.getRangeTo(creepPos);
     }), {
       reusePath: 0
     });

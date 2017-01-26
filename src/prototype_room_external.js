@@ -106,7 +106,7 @@ Room.prototype.externalHandleHighwayRoom = function() {
         return;
       }
       if (structures[0].hits < 300000) {
-        for (var i = 0; i < Math.ceil(structures[0].power / 1000) ; i++) {
+        for (var i = 0; i < Math.ceil(structures[0].power / 1000); i++) {
           this.log('Adding powertransporter at ' + Memory.powerBanks[this.name].target);
           Game.rooms[Memory.powerBanks[this.name].target].memory.queue.push({
             role: 'powertransporter',
@@ -346,7 +346,7 @@ Room.prototype.handleUnreservedRoom = function() {
       if (distance > config.external.distance) {
         continue;
       }
-    // Only allow pathing through owned rooms or already reserved rooms.
+      // Only allow pathing through owned rooms or already reserved rooms.
       for (let routeEntry of route) {
         let routeRoomName = routeEntry.room;
         if (Game.rooms[routeRoomName] === undefined) {
@@ -418,7 +418,7 @@ Room.prototype.handleSourceKeeperRoom = function() {
       if (distance > config.external.distance) {
         continue;
       }
-    // Only allow pathing through owned rooms or already reserved rooms.
+      // Only allow pathing through owned rooms or already reserved rooms.
       for (let routeEntry of route) {
         let routeRoomName = routeEntry.room;
         if (Game.rooms[routeRoomName] === undefined) {
@@ -504,7 +504,7 @@ Room.prototype.handleSourceKeeperRoom = function() {
             targetRoom: source.pos.roomName
           }
         };
-      //this.log(`!!!!!!!!!!!! ${JSON.stringify(spawn)}`);
+        //this.log(`!!!!!!!!!!!! ${JSON.stringify(spawn)}`);
         Game.rooms[reservation.base].checkRoleToSpawn('sourcer', 1, source.id, source.pos.roomName);
       }
     }
