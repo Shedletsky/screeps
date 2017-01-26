@@ -289,7 +289,6 @@ Creep.prototype.moveByPathMy = function(route, routePos, start, target, skipPreM
       }
     }
     let returnCode = this.moveTo(search.path[closestPathPosition], {
-      ignoreCreeps: true,
       reusePath: 0
     });
     if (returnCode == OK) {
