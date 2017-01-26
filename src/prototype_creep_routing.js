@@ -289,9 +289,9 @@ Creep.prototype.moveByPathMy = function(route, routePos, start, target, skipPreM
     //  }
     //}
 
-    let returnCode = this.moveTo(_.minBy(search.path, function(object) {
+    let returnCode = this.moveTo((_.minBy(search.path, function(object) {
       return object.pos.getRangeTo(this);
-    }), {
+    })), {
       reusePath: 0
     });
     if (returnCode == OK) {
