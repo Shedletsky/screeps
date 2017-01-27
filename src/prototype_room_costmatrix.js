@@ -86,7 +86,7 @@ Room.prototype.getAvoids = function(target, inRoom) {
 
   let room = this;
   let callback = function(roomName) {
-    let costMatrix = Game.rooms[roomName].getMemoryCostMatrix();
+    let costMatrix = Game.rooms[room.name].getMemoryCostMatrix();
     if (target && target.pos) {
       costMatrix.set(target.pos.x, target.pos.y, 0);
     }
